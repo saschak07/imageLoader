@@ -8,6 +8,7 @@ import com.example.imageloader.exception.NoDataFoundException;
 import com.example.imageloader.exception.RemoteResponseUnavailable;
 import com.example.imageloader.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,12 @@ public class ImageRedirectServiceImpl implements ImageRedirectService{
     private ImageDao imageDao;
     @Autowired
     private Mapper mapper;
+    @Value("${imageloader.key}")
+    private String key;
     @Override
     public ImageDto getRandomImage() {
         ResponseEntity<ImageDto> imageResponse = template.exchange("https://api.unsplash.com/photos/random/?" +
-                "client_id=7-atbbV9mx5kqmKqwlQo_WzfrwQ_Jg-Do-4cGJJ9Ghw", HttpMethod.GET,null,ImageDto.class);
+                "client_id="+key, HttpMethod.GET,null,ImageDto.class);
         if(imageResponse.getStatusCode()!= HttpStatus.OK){
             throw new RemoteResponseUnavailable("No response received from upstream");
         }
